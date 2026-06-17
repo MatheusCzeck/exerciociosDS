@@ -1,0 +1,110 @@
+/* ==========================================================================
+   1. CONFIGURAÇÕES GLOBAIS E TEMA ESCURO
+   ========================================================================== */
+body {
+  background-color: #141414; /* Preto profundo estilo Netflix */
+  color: #ffffff;
+  font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
+  margin: 0;
+  padding: 0;
+  -webkit-font-smoothing: antialiased;
+}
+
+.app-container {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 40px 20px;
+}
+
+h1 {
+  font-size: 2.2rem;
+  color: #e50914; /* Vermelho assinatura de streaming */
+  margin-bottom: 30px;
+  font-weight: bold;
+  letter-spacing: -0.5px;
+}
+
+/* ==========================================================================
+   2. COMPONENTE BUSCADOR (Formulário Sem Estado)
+   ========================================================================== */
+.search-form {
+  display: flex;
+  gap: 12px;
+  margin-bottom: 40px;
+  max-width: 600px; /* Evita que o buscador fique largo demais em telas gigantes */
+}
+
+.search-form input {
+  flex: 1;
+  background-color: #2f2f2f;
+  border: 1px solid #404040;
+  border-radius: 4px;
+  padding: 14px 20px;
+  color: #ffffff;
+  font-size: 1rem;
+  outline: none;
+  transition: border-color 0.2s ease, background-color 0.2s ease;
+}
+
+.search-form input:focus {
+  background-color: #3b3b3b;
+  border-color: #e50914; /* Borda vermelha ao focar no campo */
+}
+
+.search-form button {
+  background-color: #e50914;
+  color: #ffffff;
+  border: none;
+  border-radius: 4px;
+  padding: 14px 28px;
+  font-size: 1rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background-color 0.2s ease, transform 0.1s ease;
+}
+
+.search-form button:hover {
+  background-color: #c40812;
+}
+
+.search-form button:active {
+  transform: scale(0.98); /* Leve feedback de clique pressionado */
+}
+
+/* ==========================================================================
+   3. COMPONENTE GIFGRID (O Container de Alinhamento)
+   ========================================================================== */
+.gif-grid {
+  display: grid;
+  /* Grids responsivos automáticos: mínimo de 240px por card, distribui o espaço restante */
+  grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
+  gap: 24px;
+  padding: 10px 0;
+}
+
+/* ==========================================================================
+   4. COMPONENTE GIFITEM (A Unidade Atômica e Efeitos)
+   ========================================================================== */
+.gif-card {
+  background-color: #181818;
+  border-radius: 6px;
+  overflow: hidden;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.5);
+  transition: transform 0.3s cubic-bezier(0.25, 0.8, 0.25, 1), box-shadow 0.3s ease;
+  cursor: pointer;
+}
+
+/* Efeito clássico de zoom flutuante ao passar o rato (estilo streaming) */
+.gif-card:hover {
+  transform: translateY(-8px) scale(1.03);
+  box-shadow: 0 12px 24px rgba(0, 0, 0, 0.8);
+}
+
+/* Força todas as imagens a manterem a proporção cinemática padrão (16:9) */
+.gif-card img {
+  width: 100%;
+  height: 160px; /* Fixa a altura para manter o alinhamento lado a lado perfeito */
+  object-fit: cover; /* Recorta a imagem proporcionalmente sem distorcer as proporções */
+  border-bottom: 2px solid #222;
+  display: block;
+}

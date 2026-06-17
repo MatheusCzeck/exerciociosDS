@@ -1,0 +1,121 @@
+/* Configurações Globais / Tema Escuro */
+body {
+  background-color: #141414; /* Preto estilo Netflix */
+  color: #ffffff;
+  font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
+  margin: 0;
+  padding: 20px;
+}
+
+.app-container {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 40px 20px;
+}
+
+h1 {
+  font-size: 2.5rem;
+  color: #E50914; /* Vermelho Netflix */
+  margin-bottom: 30px;
+}
+
+/* --- Componente SearchBar --- */
+.search-form {
+  display: flex;
+  gap: 10px;
+  margin-bottom: 40px;
+}
+
+.search-form input {
+  flex: 1;
+  background-color: #333;
+  border: none;
+  border-radius: 4px;
+  padding: 12px 20px;
+  color: #fff;
+  font-size: 1rem;
+  transition: background-color 0.2s;
+}
+
+.search-form input:focus {
+  background-color: #444;
+  outline: 2px solid #E50914;
+}
+
+.search-form button {
+  background-color: #E50914;
+  color: white;
+  border: none;
+  border-radius: 4px;
+  padding: 12px 24px;
+  font-size: 1rem;
+  font-weight: bold;
+  cursor: pointer;
+  transition: transform 0.2s, background-color 0.2s;
+}
+
+.search-form button:hover {
+  background-color: #b80710;
+  transform: scale(1.02);
+}
+
+/* --- Componente MediaGrid (O Catálogo) --- */
+.media-grid {
+  display: grid;
+  /* Cria colunas responsivas que se ajustam sozinhas entre 250px e 1fr */
+  grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+  gap: 20px;
+  padding: 10px 0;
+}
+
+/* --- Card de Mídia --- */
+.media-card {
+  background-color: #181818;
+  border-radius: 6px;
+  overflow: hidden;
+  cursor: pointer;
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+  position: relative;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.5);
+}
+
+/* Efeito de Zoom ao passar o mouse (Estilo Streaming) */
+.media-card:hover {
+  transform: scale(1.05);
+  box-shadow: 0 10px 20px rgba(0, 0, 0, 0.8);
+  z-index: 10;
+}
+
+.image-wrapper {
+  position: relative;
+  width: 100%;
+  padding-top: 56.25%; /* Proporção 16:9 widescreen */
+}
+
+.media-card img {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover; /* Garante que a imagem preencha o espaço sem distorcer */
+}
+
+.card-info {
+  padding: 15px;
+}
+
+.card-info h3 {
+  margin: 0;
+  font-size: 1rem;
+  font-weight: 600;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis; /* Corta o texto com '...' se for muito grande */
+}
+
+.no-results {
+  color: #aaa;
+  font-size: 1.1rem;
+  margin-top: 40px;
+}
