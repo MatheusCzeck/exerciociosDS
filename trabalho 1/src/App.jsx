@@ -1,39 +1,39 @@
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useMemo } from 'react'
 import Buscador from './components/Buscador'
 import GridResultados from './components/GridResultados'
+import './App.css'
 
 function App() {
   const [resultados, setResultados] = useState([])
   const [termoGlobal, setTermoGlobal] = useState('')
   const [carregando, setCarregando] = useState(false)
   const [erro, setErro] = useState(null)
-  
-  // Estados para Paginação e Filtro
   const [pagina, setPagina] = useState(0)
   const [generoSelecionado, setGeneroSelecionado] = useState('Todos')
+  const [trackIdTocando, setTrackIdTocando] = useState(null)
+  const [mostrarApenasFavoritos, setMostrarApenasFavoritos] = useState(false)
+  const [entidade, setEntidade] = useState('song')
+
   const limitePorPagina = 12
+  const generosPopularesFixos = ['Todos', 'Pop', 'Rock', 'Sertanejo', 'Hip-Hop/Rap', 'Dance', 'Podcast']
 
-  // Lista dos gêneros mais populares ordenados para o topo do Select
-  const generosPopularesfíxos = [
-    'Todos',
-    'Pop',
-    'Rock',
-    'Música Sertaneja', // Mapeado para o catálogo nacional brasileiro
-    'Sertanejo',
-    'Hip-Hop/Rap',
-    'Dance',
-    'Electronic',
-    'Alternative',
-    'R&B/Soul',
-    'Reggae',
-    'Jazz'
-  ]
+  const [favoritos, setFavoritos] = useState(() => {
+    const salvos = localStorage.getItem('musicas_favoritas')
+    return salvos ? JSON.parse(salvos) : []
+  })
 
+  useEffect(() => {
+    localStorage.setItem('musicas_favoritas', JSON.stringify(favoritos))
+  }, [favoritos])
+
+  // Requisição HTTP blindada contra concorrência e race-conditions
   useEffect(() => {
     if (!termoGlobal.trim()) {
       setResultados([])
       return
     }
+
+    let active = true // Evita vazamento de memória e sobreposição de chamadas rápidas
 
     const realizarBusca = async () => {
       if (pagina === 0) setCarregando(true)
@@ -41,91 +41,156 @@ function App() {
 
       try {
         const offset = pagina * limitePorPagina
-        const url = `https://itunes.apple.com/search?term=${encodeURIComponent(termoGlobal)}&entity=song&limit=${limitePorPagina}&offset=${offset}`
-        
+        const url = `https://itunes.apple.com/search?term=${encodeURIComponent(termoGlobal)}&entity=${entidade}&limit=${limitePorPagina}&offset=${offset}`
+
         const resposta = await fetch(url)
         if (!resposta.ok) throw new Error("Não foi possível conectar ao servidor da Apple.")
-        
+
         const dados = await resposta.json()
-        
+        if (!active) return
+
+        const dadosNormalizados = (dados.results || []).map(item => ({
+          trackId: item.trackId || item.collectionId,
+          trackName: item.trackName || item.collectionName,
+          artistName: item.artistName,
+          artworkUrl100: item.artworkUrl100,
+          previewUrl: item.previewUrl || null,
+          primaryGenreName: item.primaryGenreName
+        }))
+
         if (pagina === 0) {
-          setResultados(dados.results || [])
+          setResultados(dadosNormalizados)
         } else {
-          setResultados(prev => [...prev, ...(dados.results || [])])
+          setResultados(prev => [...prev, ...dadosNormalizados])
         }
       } catch (err) {
-        setErro(err.message || "Ocorreu um erro inesperado ao buscar as músicas.")
+        if (active) setErro(err.message || "Ocorreu um erro inesperado ao buscar.")
       } finally {
-        setCarregando(false)
+        if (active) setCarregando(false)
       }
     }
 
     realizarBusca()
-  }, [termoGlobal, pagina])
+
+    return () => { active = false }
+  }, [termoGlobal, pagina, entidade])
 
   const lidarComNovaBusca = (novoTermo) => {
     setTermoGlobal(novoTermo)
     setPagina(0)
-    setGeneroSelecionado('Todos') // Reseta o filtro em novas buscas
+    setGeneroSelecionado('Todos')
+    setMostrarApenasFavoritos(false)
+    setTrackIdTocando(null)
   }
 
-  // Monta a lista híbrida: Populares fixos primeiro + os que vierem da API (sem duplicar)
-  const generosDisponiveis = [
-    ...generosPopularesfíxos,
-    ...new Set(
-      resultados
-        .map(item => item.primaryGenreName)
-        .filter(gen => gen && !generosPopularesfíxos.includes(gen))
-    )
-  ]
+  const alternarFavorito = (musica) => {
+    setFavoritos(prev => {
+      const jaEFavorito = prev.some(item => item.trackId === musica.trackId)
+      if (jaEFavorito) return prev.filter(item => item.trackId !== musica.trackId)
+      return [...prev, musica]
+    })
+  }
 
-  // Filtra os resultados em memória com base no gênero selecionado
-  const resultadosFiltrados = generoSelecionado === 'Todos' 
-    ? resultados 
-    : resultados.filter(item => item.primaryGenreName === generoSelecionado)
+  const baseDeDados = mostrarApenasFavoritos ? favoritos : resultados
+
+  // Otimização com useMemo para derivar os dados sem recalcular a cada render à toa
+  const generosDisponiveis = useMemo(() => {
+    return Array.from(new Set([
+      ...generosPopularesFixos,
+      ...baseDeDados.map(item => item.primaryGenreName).filter(Boolean)
+    ]))
+  }, [baseDeDados])
+
+  const resultadosFiltrados = useMemo(() => {
+    return generoSelecionado === 'Todos'
+      ? baseDeDados
+      : baseDeDados.filter(item => item.primaryGenreName === generoSelecionado)
+  }, [baseDeDados, generoSelecionado])
+
+  const pularMusica = (direcao) => {
+    if (!trackIdTocando || resultadosFiltrados.length === 0) return
+
+    const indiceAtual = resultadosFiltrados.findIndex(item => item.trackId === trackIdTocando)
+    if (indiceAtual === -1) return
+
+    let proximoIndice
+    if (direcao === 'proxima') {
+      proximoIndice = (indiceAtual + 1) % resultadosFiltrados.length
+    } else if (direcao === 'anterior') {
+      proximoIndice = (indiceAtual - 1 + resultadosFiltrados.length) % resultadosFiltrados.length
+    }
+
+    const proximaMusica = resultadosFiltrados[proximoIndice]
+    if (proximaMusica && proximaMusica.previewUrl) {
+      setTrackIdTocando(proximaMusica.trackId)
+    } else {
+      setTrackIdTocando(null)
+    }
+  }
 
   return (
-    <div style={{ minHeight: '100vh', padding: '60px 20px' }}>
-      
-      <header style={{ textAlign: 'center', marginBottom: '50px' }}>
-        <h1 style={{ 
-          fontSize: '42px', 
-          fontWeight: '800', 
-          color: '#ffffff',
-          textShadow: '0 0 20px rgba(147, 51, 234, 0.3)',
-          marginBottom: '12px',
-          letterSpacing: '-1px'
-        }}>
-          Buscador Dinâmico de Músicas
-        </h1>
-        <p style={{ color: '#a1a1aa', fontSize: '16px' }}>
-          Explore e ouça prévias do catálogo global de forma automática e otimizada
-        </p>
+    <div className="app-container">
+      <header className="app-header">
+        <div className="logo-container">
+          {/* Ícone da Logo em SVG: Onda Sonora + Aurora */}
+          <svg className="logo-icon" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <path d="M4 10V14" stroke="url(#aurora-grad)" strokeWidth="2.5" strokeLinecap="round" />
+            <path d="M8 6V18" stroke="url(#aurora-grad)" strokeWidth="2.5" strokeLinecap="round" />
+            <path d="M12 3V21" stroke="url(#aurora-grad)" strokeWidth="2.5" strokeLinecap="round" />
+            <path d="M16 8V16" stroke="url(#aurora-grad)" strokeWidth="2.5" strokeLinecap="round" />
+            <path d="M20 11V13" stroke="url(#aurora-grad)" strokeWidth="2.5" strokeLinecap="round" />
+            <defs>
+              {/* Gradiente que imita o fundo do seu site */}
+              <linearGradient id="aurora-grad" x1="0%" y1="0%" x2="100%" y2="100%">
+                <stop offset="0%" stopColor="#a855f7" />
+                <stop offset="100%" stopColor="#3b82f6" />
+              </linearGradient>
+            </defs>
+          </svg>
+          <h1 className="logo-texto">Vibra<span>FM</span></h1>
+        </div>
+        <p>Explore e ouça prévias do catálogo global de forma automática e otimizada</p>
       </header>
-      
+
       <Buscador onBuscar={lidarComNovaBusca} />
 
-      {/* Interface do Filtro por Gêneros Populares */}
-      {resultados.length > 0 && (
-        <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', gap: '12px', marginBottom: '30px' }}>
-          <span style={{ color: '#a1a1aa', fontSize: '14px', fontWeight: '500' }}>Gênero:</span>
-          <select 
-            value={generoSelecionado} 
+      <div className="abas-container">
+        <button
+          onClick={() => { setEntidade('song'); setPagina(0); setMostrarApenasFavoritos(false); setTrackIdTocando(null); }}
+          className={`aba-btn ${entidade === 'song' && !mostrarApenasFavoritos ? 'ativa' : ''}`}
+        >
+          🎵 Músicas
+        </button>
+
+        <button
+          onClick={() => { setEntidade('album'); setPagina(0); setMostrarApenasFavoritos(false); setTrackIdTocando(null); }}
+          className={`aba-btn ${entidade === 'album' && !mostrarApenasFavoritos ? 'ativa' : ''}`}
+        >
+          💽 Álbuns
+        </button>
+
+        <button
+          onClick={() => { setEntidade('podcast'); setPagina(0); setMostrarApenasFavoritos(false); setTrackIdTocando(null); }}
+          className={`aba-btn ${entidade === 'podcast' && !mostrarApenasFavoritos ? 'ativa' : ''}`}
+        >
+          🎙️ Podcasts
+        </button>
+
+        <button
+          onClick={() => { setMostrarApenasFavoritos(true); setTrackIdTocando(null); }}
+          className={`aba-btn favs ${mostrarApenasFavoritos ? 'ativa' : ''}`}
+        >
+          ❤️ Meus Favoritos ({favoritos.length})
+        </button>
+      </div>
+
+      {baseDeDados.length > 0 && (
+        <div className="filtro-genero-container">
+          <span>Gênero:</span>
+          <select
+            value={generoSelecionado}
             onChange={(e) => setGeneroSelecionado(e.target.value)}
-            style={{
-              padding: '10px 16px',
-              borderRadius: '10px',
-              backgroundColor: '#18181b',
-              border: '1px solid #27272a',
-              color: '#fff',
-              fontSize: '14px',
-              outline: 'none',
-              cursor: 'pointer',
-              boxShadow: '0 4px 10px rgba(0,0,0,0.3)',
-              transition: 'border-color 0.2s'
-            }}
-            onFocus={(e) => e.target.style.borderColor = '#a855f7'}
-            onBlur={(e) => e.target.style.borderColor = '#27272a'}
+            className="select-genero"
           >
             {generosDisponiveis.map(gen => (
               <option key={gen} value={gen}>
@@ -136,55 +201,45 @@ function App() {
         </div>
       )}
 
+      {/* Mensagem de Erro */}
       {erro && (
-        <div style={{ 
-          maxWidth: '600px', 
-          margin: '20px auto', 
-          padding: '16px', 
-          backgroundColor: 'rgba(239, 68, 68, 0.1)', 
-          border: '1px solid #ef4444', 
-          borderRadius: '12px',
-          color: '#ef4444',
-          textAlign: 'center'
-        }}>
-          <p style={{ fontWeight: '600' }}>⚠️ Falha na Requisição</p>
-          <p style={{ fontSize: '14px', marginTop: '4px' }}>{erro}</p>
+        <div className="error-box">
+          <p className="error-title">⚠️ Falha na Requisição</p>
+          <p>{erro}</p>
         </div>
       )}
 
-      <GridResultados conteudos={resultadosFiltrados} carregando={carregando} />
+      {/* Logo de Busca Ativa (Loader) */}
+      {carregando && pagina === 0 ? (
+        <div className="busca-loading-container">
+          <div className="disco-loader">
+            <div className="disco-centro"></div>
+          </div>
+          <p className="busca-loading-texto">Sintonizando frequências...</p>
+        </div>
+      ) : (
+        <GridResultados
+          conteudos={resultadosFiltrados}
+          carregando={carregando && pagina > 0} /* Mantém o esqueleto apenas para o "Carregar Mais" */
+          trackIdTocando={trackIdTocando}
+          setTrackIdTocando={setTrackIdTocando}
+          favoritos={favoritos}
+          onAlternarFavorito={alternarFavorito}
+          onPularMusica={pularMusica}
+        />
+      )}
 
-      {!carregando && resultados.length > 0 && resultadosFiltrados.length >= limitePorPagina && (
-        <div style={{ textAlign: 'center', marginTop: '40px' }}>
-          <button 
-            onClick={() => setPagina(prev => prev + 1)}
-            style={{
-              padding: '12px 24px',
-              borderRadius: '10px',
-              border: '1px solid #a855f7',
-              backgroundColor: 'transparent',
-              color: '#a855f7',
-              fontWeight: '600',
-              cursor: 'pointer',
-              transition: 'all 0.2s ease'
-            }}
-            onMouseEnter={(e) => {
-              e.target.style.backgroundColor = '#a855f7'
-              e.target.style.color = '#fff'
-            }}
-            onMouseLeave={(e) => {
-              e.target.style.backgroundColor = 'transparent'
-              e.target.style.color = '#a855f7'
-            }}
-          >
-            Carregar Mais Músicas
+      {!carregando && !mostrarApenasFavoritos && resultados.length > 0 && resultadosFiltrados.length >= limitePorPagina && (
+        <div className="paginacao-container">
+          <button onClick={() => setPagina(prev => prev + 1)} className="btn-carregar-mais">
+            Carregar Mais Resultados
           </button>
         </div>
       )}
 
-      {!carregando && resultados.length === 0 && !erro && (
-        <div style={{ textAlign: 'center', color: '#71717a', marginTop: '60px' }}>
-          <p style={{ fontSize: '16px' }}>Digite um artista para iniciar a busca em tempo real.</p>
+      {!carregando && resultadosFiltrados.length === 0 && (
+        <div className="empty-state">
+          <p>Nenhum resultado encontrado para esta categoria ou gênero.</p>
         </div>
       )}
     </div>

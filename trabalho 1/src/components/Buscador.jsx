@@ -1,59 +1,31 @@
-import { useState, useEffect, useRef } from 'react'
+import { useState } from 'react'
+import { useDebounce } from '../hooks/useDebounce' // ajuste o caminho se necessário
 
 function Buscador({ onBuscar }) {
   const [termo, setTermo] = useState('')
-  const [isFocused, setIsFocused] = useState(false)
-  const timerRef = useRef(null)
+  
+  // Instancia nosso hook de debounce
+  const debouncedBuscar = useDebounce((valor) => onBuscar(valor), 500)
 
-  // Efeito de Debounce para busca em tempo real
-  useEffect(() => {
-    // Limpa o timer anterior se o usuário continuar digitando rápido
-    if (timerRef.current) {
-      clearTimeout(timerRef.current)
-    }
+  const aoMudarInput = (e) => {
+    const valor = e.target.value
+    setTermo(valor)
+    debouncedBuscar(valor) // Dispara o debounce a cada letra
+  }
 
-    if (!termo.trim()) return
-
-    // Agenda a requisição para 500ms após o último caractere digitado
-    timerRef.current = setTimeout(() => {
-      onBuscar(termo)
-    }, 500)
-
-    return () => clearTimeout(timerRef.current)
-  }, [termo])
-
-  const aoEnviarSumbit = (e) => {
-    e.preventDefault() // Mantido para caso o usuário aperte "Enter" manualmente
+  const aoEnviarSubmit = (e) => {
+    e.preventDefault()
     onBuscar(termo)
   }
 
   return (
-    <form onSubmit={aoEnviarSumbit} style={{ 
-      display: 'flex', 
-      width: '100%', 
-      maxWidth: '600px', 
-      margin: '0 auto 40px auto' 
-    }}>
+    <form onSubmit={aoEnviarSubmit} className="buscador-form">
       <input 
         type="text" 
-        placeholder="Digite para buscar automaticamente (ex: Alok, Queen)..." 
+        placeholder="Digite para buscar automaticamente..." 
         value={termo}
-        onChange={(e) => setTermo(e.target.value)}
-        onFocus={() => setIsFocused(true)}
-        onBlur={() => setIsFocused(false)}
-        style={{ 
-          flex: 1,
-          padding: '14px 20px', 
-          borderRadius: '12px', 
-          border: isFocused ? '2px solid #a855f7' : '1px solid #27272a',
-          backgroundColor: '#18181b',
-          color: '#fff',
-          fontSize: '16px',
-          outline: 'none',
-          boxShadow: isFocused ? '0 0 25px rgba(168, 85, 247, 0.3)' : 'none',
-          transition: 'all 0.2s ease-in-out',
-          textAlign: 'center'
-        }}
+        onChange={aoMudarInput}
+        className="buscador-input"
       />
     </form>
   )

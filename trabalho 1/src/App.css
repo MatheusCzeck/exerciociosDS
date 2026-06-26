@@ -1,184 +1,641 @@
-.counter {
+/* Classes Utilitárias Globais para o App */
+.app-container {
+  min-height: 100vh;
+  padding: 60px 20px;
+  color: #fff;
+  font-family: system-ui, sans-serif;
+}
+
+.app-header {
+  text-align: center;
+  margin-bottom: 40px;
+
+  h1 {
+    font-size: 42px;
+    font-weight: 800;
+    color: #ffffff;
+    text-shadow: 0 0 30px rgba(168, 85, 247, 0.4);
+    margin-bottom: 12px;
+    letter-spacing: -1px;
+  }
+  p {
+    color: #a1a1aa;
+    font-size: 16px;
+  }
+}
+
+/* Componente Buscador */
+.buscador-form {
+  display: flex;
+  width: 100%;
+  max-width: 600px;
+  margin: 0 auto 30px auto;
+}
+
+.buscador-input {
+  flex: 1;
+  padding: 14px 20px;
+  border-radius: 12px;
+  border: 1px solid #27272a;
+  background-color: #18181b;
+  color: #fff;
   font-size: 16px;
-  padding: 5px 10px;
-  border-radius: 5px;
-  color: var(--accent);
-  background: var(--accent-bg);
-  border: 2px solid transparent;
-  transition: border-color 0.3s;
-  margin-bottom: 24px;
+  outline: none;
+  text-align: center;
+  transition: all 0.2s ease-in-out;
+
+  &:focus {
+    border: 2px solid #a855f7;
+    box-shadow: 0 0 25px rgba(168, 85, 247, 0.3);
+  }
+}
+
+/* Abas de Entidades e Mídias */
+.abas-container {
+  display: flex;
+  justify-content: center;
+  flex-wrap: wrap;
+  gap: 12px;
+  margin-bottom: 30px;
+}
+
+.aba-btn {
+  padding: 10px 20px;
+  border-radius: 10px;
+  border: 1px solid #27272a;
+  background-color: #18181b;
+  color: #a1a1aa;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s ease;
 
   &:hover {
-    border-color: var(--accent-border);
-  }
-  &:focus-visible {
-    outline: 2px solid var(--accent);
-    outline-offset: 2px;
-  }
-}
-
-.hero {
-  position: relative;
-
-  .base,
-  .framework,
-  .vite {
-    inset-inline: 0;
-    margin: 0 auto;
+    color: #fff;
+    border-color: #71717a;
   }
 
-  .base {
-    width: 170px;
-    position: relative;
-    z-index: 0;
+  &.ativa {
+    border-color: #a855f7;
+    background-color: #a855f7;
+    color: #fff;
   }
 
-  .framework,
-  .vite {
-    position: absolute;
-  }
-
-  .framework {
-    z-index: 1;
-    top: 34px;
-    height: 28px;
-    transform: perspective(2000px) rotateZ(300deg) rotateX(44deg) rotateY(39deg)
-      scale(1.4);
-  }
-
-  .vite {
-    z-index: 0;
-    top: 107px;
-    height: 26px;
-    width: auto;
-    transform: perspective(2000px) rotateZ(300deg) rotateX(40deg) rotateY(39deg)
-      scale(0.8);
+  &.favs {
+    border-color: rgba(168, 85, 247, 0.4);
+    
+    &.ativa {
+      background-color: #a855f7;
+    }
   }
 }
 
-#center {
+/* Filtro de Gênero */
+.filtro-genero-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 12px;
+  margin-bottom: 30px;
+
+  span {
+    color: #a1a1aa;
+    font-size: 14px;
+    font-weight: 500;
+  }
+}
+
+.select-genero {
+  padding: 10px 16px;
+  border-radius: 10px;
+  background-color: #18181b;
+  border: 1px solid #27272a;
+  color: #fff;
+  font-size: 14px;
+  outline: none;
+  cursor: pointer;
+  box-shadow: 0 4px 10px rgba(0,0,0,0.3);
+  transition: border-color 0.2s;
+
+  &:focus {
+    border-color: #a855f7;
+  }
+}
+
+/* Caixa de Erro */
+.error-box {
+  max-width: 600px;
+  margin: 20px auto;
+  padding: 16px;
+  background-color: rgba(239, 68, 68, 0.1);
+  border: 1px solid #ef4444;
+  border-radius: 12px;
+  color: #ef4444;
+  text-align: center;
+
+  .error-title {
+    font-weight: 600;
+  }
+}
+
+/* Paginação */
+.paginacao-container {
+  text-align: center;
+  margin-top: 40px;
+}
+
+.btn-carregar-mais {
+  padding: 12px 24px;
+  border-radius: 10px;
+  border: 1px solid #a855f7;
+  background-color: transparent;
+  color: #a855f7;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s ease;
+
+  &:hover {
+    background-color: #a855f7;
+    color: #fff;
+  }
+}
+
+.empty-state {
+  text-align: center;
+  color: #71717a;
+  margin-top: 60px;
+}
+/* ==========================================================================
+   Estilos do Novo Player Card Premium
+   ========================================================================== */
+
+.player-card {
+  background-color: #151518;
+  border: 1px solid #222226;
+  padding: 16px; 
+  border-radius: 20px; 
   display: flex;
   flex-direction: column;
-  gap: 25px;
-  place-content: center;
-  place-items: center;
-  flex-grow: 1;
-
-  @media (max-width: 1024px) {
-    padding: 32px 20px 24px;
-    gap: 18px;
-  }
-}
-
-#next-steps {
-  display: flex;
-  border-top: 1px solid var(--border);
-  text-align: left;
-
-  & > div {
-    flex: 1 1 0;
-    padding: 32px;
-    @media (max-width: 1024px) {
-      padding: 24px 20px;
-    }
-  }
-
-  .icon {
-    margin-bottom: 16px;
-    width: 22px;
-    height: 22px;
-  }
-
-  @media (max-width: 1024px) {
-    flex-direction: column;
-    text-align: center;
-  }
-}
-
-#docs {
-  border-right: 1px solid var(--border);
-
-  @media (max-width: 1024px) {
-    border-right: none;
-    border-bottom: 1px solid var(--border);
-  }
-}
-
-#next-steps ul {
-  list-style: none;
-  padding: 0;
-  display: flex;
-  gap: 8px;
-  margin: 32px 0 0;
-
-  .logo {
-    height: 18px;
-  }
-
-  a {
-    color: var(--text-h);
-    font-size: 16px;
-    border-radius: 6px;
-    background: var(--social-bg);
-    display: flex;
-    padding: 6px 12px;
-    align-items: center;
-    gap: 8px;
-    text-decoration: none;
-    transition: box-shadow 0.3s;
-
-    &:hover {
-      box-shadow: var(--shadow);
-    }
-    .button-icon {
-      height: 18px;
-      width: 18px;
-    }
-  }
-
-  @media (max-width: 1024px) {
-    margin-top: 20px;
-    flex-wrap: wrap;
-    justify-content: center;
-
-    li {
-      flex: 1 1 calc(50% - 8px);
-    }
-
-    a {
-      width: 100%;
-      justify-content: center;
-      box-sizing: border-box;
-    }
-  }
-}
-
-#spacer {
-  height: 88px;
-  border-top: 1px solid var(--border);
-  @media (max-width: 1024px) {
-    height: 48px;
-  }
-}
-
-.ticks {
+  justify-content: space-between;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.4);
+  transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
   position: relative;
+  overflow: hidden;
+
+  &:hover {
+    transform: translateY(-6px);
+    border-color: #a855f7;
+    box-shadow: 0 20px 38px rgba(0, 0, 0, 0.6), 0 0 20px rgba(168, 85, 247, 0.2);
+  }
+
+  &.tocando {
+    border-color: #a855f7;
+    background-color: #1c1924;
+    box-shadow: 0 10px 30px rgba(168, 85, 247, 0.15);
+  }
+}
+
+/* Botão de favoritos flutuante */
+.card-fav-btn {
+  position: absolute;
+  top: 24px;
+  right: 24px;
+  z-index: 10;
+  background: rgba(15, 15, 17, 0.75);
+  backdrop-filter: blur(8px);
+  border: 1px solid rgba(255, 255, 255, 0.05);
+  border-radius: 50%;
+  width: 38px;
+  height: 38px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  cursor: pointer;
+  font-size: 16px;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.5);
+  transition: all 0.2s ease;
+
+  &:hover {
+    transform: scale(1.1);
+    background: rgba(15, 15, 17, 0.95);
+  }
+
+  &.favoritado {
+    background: rgba(168, 85, 247, 0.2);
+    border-color: rgba(168, 85, 247, 0.4);
+  }
+}
+
+/* Container da Imagem Inteligente com Blur de fundo */
+.card-image-container {
+  position: relative; 
+  overflow: hidden; 
+  border-radius: 14px; 
+  margin-bottom: 16px;
+  aspect-ratio: 1/1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background-color: #09090b;
+}
+
+.card-image-blur {
+  position: absolute;
+  inset: -10px;
+  background-size: cover;
+  background-position: center;
+  filter: blur(20px) brightness(0.4);
+  transform: scale(1.1);
+  z-index: 1;
+}
+
+.card-main-image {
+  width: 85%; 
+  height: 85%;
+  object-fit: cover;
+  border-radius: 10px;
+  z-index: 2;
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.5);
+}
+
+/* Overlay de controle */
+.card-play-overlay {
+  position: absolute;
+  inset: 0;
+  background-color: rgba(0, 0, 0, 0.4);
+  border: none;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  cursor: pointer;
+  opacity: 0;
+  z-index: 3;
+  transition: opacity 0.25s ease;
+
+  &.visivel {
+    opacity: 1;
+  }
+}
+
+.play-btn-premium {
+  background-color: #a855f7;
+  width: 55px;
+  height: 55px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: white;
+  box-shadow: 0 8px 20px rgba(168, 85, 247, 0.4), inset 0 2px 4px rgba(255, 255, 255, 0.2);
+  transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+  transform: scale(0.9);
+}
+
+/* Efeito de crescimento e mudança de cor no Hover do overlay */
+.card-play-overlay:hover .play-btn-premium {
+  transform: scale(1.05);
+  background-color: #b55fe6;
+  box-shadow: 0 10px 25px rgba(168, 85, 247, 0.6), inset 0 2px 4px rgba(255, 255, 255, 0.3);
+}
+
+/* Efeito pulsação discreta se o card estiver tocando */
+.play-btn-premium.is-playing {
+  background-color: #fff;
+  color: #18181b;
+  box-shadow: 0 8px 20px rgba(255, 255, 255, 0.2);
+  transform: scale(1);
+}
+
+.card-play-overlay:hover .play-btn-premium.is-playing {
+  background-color: #f4f4f5;
+  color: #18181b;
+  transform: scale(1.05);
+}
+
+/* Estilo do ícone vetorial */
+.player-svg-icon {
+  width: 22px;
+  height: 22px;
+  transition: transform 0.2s ease;
+}
+
+/* Ajuste fino geométrico porque o triângulo do play por padrão parece desalinhado ao centro */
+.player-svg-icon.play-adjust {
+  transform: translateX(1px);
+}
+
+/* Textos */
+.card-title {
+  font-size: 16px; 
+  font-weight: 600; 
+  margin: 0 0 4px 0; 
+  color: #fff;
+  white-space: nowrap; 
+  overflow: hidden; 
+  text-overflow: ellipsis;
+  padding: 0 4px;
+}
+
+.card-artist {
+  font-size: 13px; 
+  color: #a1a1aa; 
+  margin: 0 0 16px 0;
+  white-space: nowrap; 
+  overflow: hidden; 
+  text-overflow: ellipsis;
+  padding: 0 4px;
+}
+
+/* UI Customizada do Player de Áudio (Barra de Progresso) */
+.custom-player-ui {
+  margin-top: auto;
+  padding: 4px;
+}
+
+.progress-bar-container {
   width: 100%;
+  height: 4px;
+  background-color: #27272a;
+  border-radius: 2px;
+  overflow: hidden;
+  position: relative;
+}
 
-  &::before,
-  &::after {
-    content: '';
-    position: absolute;
-    top: -4.5px;
-    border: 5px solid transparent;
+.progress-bar-fill {
+  height: 100%;
+  background: linear-gradient(90deg, #a855f7, #c084fc);
+  border-radius: 2px;
+  transition: width 0.1s linear;
+}
+
+.player-time-info {
+  display: flex;
+  justify-content: space-between;
+  font-size: 11px;
+  color: #71717a;
+  margin-top: 6px;
+  font-variant-numeric: tabular-nums; /* Evita que os números fiquem tremendo */
+}
+
+/* Tag informativa para Álbuns e mídias sem som */
+.no-preview-tag {
+  margin-top: auto;
+  background-color: #18181b;
+  border: 1px dashed #27272a;
+  border-radius: 8px;
+  padding: 6px;
+  text-align: center;
+  
+  span {
+    font-size: 11px;
+    color: #52525b;
+    font-weight: 500;
+  }
+}
+/* Container de controles do player ativo */
+.player-controls {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 16px;
+  margin-top: 12px;
+  animation: fadeIn 0.3s ease;
+}
+
+/* Botões de controle de mídia */
+.control-btn {
+  background: transparent;
+  border: none;
+  color: #a1a1aa;
+  cursor: pointer;
+  width: 32px;
+  height: 32px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.2s ease;
+
+  svg {
+    width: 20px;
+    height: 20px;
   }
 
-  &::before {
-    left: 0;
-    border-left-color: var(--border);
+  &:hover {
+    color: #fff;
+    transform: scale(1.1);
   }
-  &::after {
-    right: 0;
-    border-right-color: var(--border);
+}
+
+/* Botão pequeno centralizado de play/pause alternativo nos controles */
+.control-btn.play-pause-small {
+  color: #a855f7;
+  
+  &:hover {
+    color: #b55fe6;
   }
+}
+
+/* Animação suave para exibir os controles */
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(4px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+/* ==========================================================================
+   Fundo Animado de Alta Performance (Gradientes de Aurora)
+   ========================================================================== */
+
+.app-container {
+  min-height: 100vh;
+  padding: 60px 20px;
+  color: #fff;
+  font-family: system-ui, sans-serif;
+  position: relative;
+  background-color: #0b0b0e; /* Cor base super escura */
+  overflow-x: hidden;
+  /* FORÇA a criação de um contexto de renderização isolado para o z-index funcionar */
+  isolation: isolate; 
+}
+
+/* Camada da animação de fundo */
+.app-container::before {
+  content: '';
+  position: fixed;
+  inset: 0;
+  /* Garante que fica atrás, mas dentro do escopo isolado do container */
+  z-index: -1; 
+  
+  /* Definimos o gradiente no centro (ou sem posições fixas rígidas) */
+  background: 
+    radial-gradient(circle at 30% 30%, rgba(147, 51, 234, 0.18) 0%, transparent 50%),
+    radial-gradient(circle at 70% 70%, rgba(192, 132, 252, 0.12) 0%, transparent 50%),
+    radial-gradient(circle at 50% 50%, rgba(59, 130, 246, 0.1) 0%, transparent 50%);
+  
+  /* Aumentamos o background-size para que o movimento de rotação/escala funcione */
+  background-size: 200% 200%;
+  
+  /* Mudamos para uma animação combinada (escala + rotação suave + translação) para dar o efeito fluido de aurora */
+  animation: moverGradienteFundo 20s ease-in-out infinite alternate;
+  
+  /* Evita travamentos de renderização ativando aceleração por hardware */
+  will-change: transform; 
+}
+
+/* Linha do tempo da animação: movemos usando transformações (escala e rotação) 
+   que são infinitamente mais leves para o navegador processar do que mover a posição de pixels do background */
+@keyframes moverGradienteFundo {
+  0% {
+    transform: scale(1) translate(0px, 0px) rotate(0deg);
+  }
+  50% {
+    transform: scale(1.2) translate(4%, -2%) rotate(4deg);
+  }
+  100% {
+    transform: scale(0.9) translate(-2%, 4%) rotate(-4deg);
+  }
+}
+
+/* Ajuste fino para os cartões e elementos flutuarem melhor no novo fundo */
+.player-card, .buscador-input, .aba-btn, .select-genero {
+  /* Adicionado um background sutilmente transparente para o blur funcionar perfeitamente */
+  background-color: rgba(24, 24, 27, 0.75) !important;
+  backdrop-filter: blur(12px); 
+  -webkit-backdrop-filter: blur(12px); /* Suporte para navegadores Safari/iOS */
+}
+/* ==========================================================================
+   Estilos da Nova Logo Premium
+   ========================================================================== */
+
+.app-header {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  margin-bottom: 40px;
+}
+
+.logo-container {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  margin-bottom: 12px;
+}
+
+.logo-icon {
+  width: 42px;
+  height: 42px;
+  /* Faz o ícone pulsar levemente no ritmo */
+  animation: pulsoLogo 2s ease-in-out infinite alternate;
+  filter: drop-shadow(0 0 12px rgba(168, 85, 247, 0.6));
+}
+
+.logo-texto {
+  font-size: 42px;
+  font-weight: 800;
+  color: #ffffff;
+  letter-spacing: -1.5px;
+  margin: 0;
+  display: flex;
+  align-items: center;
+}
+
+/* O "FM" ou final do nome ganha o destaque do gradiente */
+.logo-texto span {
+  background: linear-gradient(135deg, #c084fc, #6366f1);
+  -webkit-background-clip: text; /* Suporte para Chrome, Safari e browsers baseados em Chromium */
+  background-clip: text;         /* Propriedade padrão para conformidade com a W3C (Firefox e futuros) */
+  -webkit-text-fill-color: transparent;
+  margin-left: 2px;
+}
+
+@keyframes pulsoLogo {
+  0% {
+    transform: scale(1);
+    filter: drop-shadow(0 0 8px rgba(168, 85, 247, 0.5));
+  }
+  100% {
+    transform: scale(1.08);
+    filter: drop-shadow(0 0 18px rgba(59, 130, 246, 0.8));
+  }
+}
+
+/* ==========================================================================
+   Logo Animada de Busca (Loader)
+   ========================================================================== */
+
+.busca-loading-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  margin: 60px auto;
+  animation: fadeInLoader 0.3s ease-out;
+}
+
+.disco-loader {
+  width: 64px;
+  height: 64px;
+  border-radius: 50%;
+  /* Cria o efeito de vinil com o gradiente da Aurora */
+  background: conic-gradient(from 0deg, #a855f7, #3b82f6, #a855f7);
+  position: relative;
+  box-shadow: 0 0 30px rgba(168, 85, 247, 0.4);
+  
+  /* Animações combinadas: Rotação contínua e pulsação suave */
+  animation: 
+    girarDisco 1.2s linear infinite,
+    pulsarDisco 1.5s ease-in-out infinite alternate;
+  will-change: transform;
+}
+
+/* O furinho central do disco de vinil */
+.disco-loader::before {
+  content: '';
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: 18px;
+  height: 18px;
+  background-color: #0b0b0e; /* Mesma cor de fundo do app */
+  border-radius: 50%;
+  border: 2px solid rgba(255, 255, 255, 0.1);
+}
+
+.busca-loading-texto {
+  margin-top: 20px;
+  font-size: 14px;
+  color: #a1a1aa;
+  letter-spacing: 1px;
+  font-weight: 500;
+  animation: piscarTexto 1.5s ease-in-out infinite alternate;
+}
+
+/* Linhas do tempo das animações (Keyframes) */
+
+@keyframes girarDisco {
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+@keyframes pulsarDisco {
+  0% {
+    box-shadow: 0 0 20px rgba(168, 85, 247, 0.3);
+  }
+  100% {
+    box-shadow: 0 0 40px rgba(59, 130, 246, 0.6);
+  }
+}
+
+@keyframes piscarTexto {
+  0% { opacity: 0.5; }
+  100% { opacity: 1; }
+}
+
+@keyframes fadeInLoader {
+  from { opacity: 0; transform: translateY(10px); }
+  to { opacity: 1; transform: translateY(0); }
 }
