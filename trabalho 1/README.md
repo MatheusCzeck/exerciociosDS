@@ -20,6 +20,7 @@
 - [Passos de Desenvolvimento](#-passos-de-desenvolvimento)
 - [Rubrica de Avaliação](#-rubrica-de-avaliação)
 - [Roteiro do Aluno](#-roteiro-do-aluno)
+- [Novidades da Versão Atual](#-novidades-da-versão-atual)
 
 ---
 
@@ -448,3 +449,165 @@ payload.artworkUrl100.replace('100x100bb', '400x400bb')
 ---
 
 *Projeto desenvolvido como exercício pedagógico de React — Ciclo Unidirecional de Dados, Componentização e Consumo de APIs REST.*
+
+# 🚀 Novidades da Versão Atual
+
+A versão atual do **VibraFM** traz uma série de melhorias que expandem significativamente as funcionalidades do projeto. O que começou como um simples buscador de músicas evoluiu para uma aplicação multimídia mais completa, moderna e otimizada para a experiência do usuário.
+
+---
+
+## ✨ Novos Recursos
+
+### 🎵 Busca Multimídia
+Agora é possível pesquisar diferentes tipos de conteúdo utilizando a iTunes Search API:
+
+- Músicas
+- Álbuns
+- Podcasts
+
+Isso amplia as possibilidades de navegação e descoberta de conteúdo dentro da aplicação.
+
+---
+
+### ❤️ Sistema de Favoritos
+
+Os usuários podem salvar seus conteúdos preferidos para acesso rápido posteriormente.
+
+**Funcionalidades:**
+
+- Adicionar favoritos
+- Remover favoritos
+- Persistência automática com Local Storage
+- Visualização exclusiva dos itens favoritados
+
+---
+
+### 🎧 Player Integrado
+
+A aplicação agora conta com um player próprio para reprodução das prévias disponíveis pela API.
+
+**Recursos do player:**
+
+- Reprodução de áudio
+- Controle de play e pause
+- Exibição de tempo atual
+- Barra de progresso
+- Navegação entre faixas
+
+---
+
+### 🔍 Busca Otimizada
+
+Foi implementado um sistema de **debounce**, evitando chamadas excessivas para a API durante a digitação.
+
+**Benefícios:**
+
+- Menor consumo de requisições
+- Melhor desempenho
+- Experiência mais fluida
+
+---
+
+### 🎭 Filtros Dinâmicos
+
+Os resultados podem ser filtrados por gênero musical.
+
+**Vantagens:**
+
+- Navegação mais rápida
+- Melhor organização dos resultados
+- Descoberta facilitada de novos conteúdos
+
+---
+
+### 📄 Paginação
+
+A aplicação passou a suportar carregamento progressivo de resultados.
+
+**Benefícios:**
+
+- Melhor performance
+- Menor tempo de carregamento inicial
+- Experiência semelhante a plataformas profissionais
+
+---
+
+### 🖼️ Lazy Loading de Imagens
+
+As imagens são carregadas apenas quando necessário.
+
+**Impactos positivos:**
+
+- Menor consumo de dados
+- Melhor desempenho da interface
+- Carregamento mais rápido
+
+---
+
+## 🎨 Nova Interface
+
+A experiência visual foi completamente aprimorada.
+
+### Melhorias de Design
+
+- Interface moderna
+- Tema escuro
+- Efeitos Glassmorphism
+- Animações suaves
+- Componentes mais organizados
+- Feedback visual aprimorado
+
+---
+
+## ⚡ Melhorias de Performance
+
+Diversas otimizações foram implementadas para tornar a aplicação mais eficiente.
+
+### Otimizações
+
+- Redução de renderizações desnecessárias
+- Melhor gerenciamento de estados
+- Carregamento otimizado de dados
+- Tratamento aprimorado de erros
+- Estrutura mais escalável
+
+---
+
+## 📈 Evolução do Projeto
+
+### Versão Inicial
+
+- Busca básica de músicas
+- Exibição simples de resultados
+- Consumo direto da API
+- Interface minimalista
+
+### Versão Atual
+
+- Busca de músicas, álbuns e podcasts
+- Sistema de favoritos
+- Player multimídia
+- Paginação
+- Filtros por gênero
+- Lazy Loading
+- Debounce
+- Interface premium
+- Melhor performance
+- Arquitetura mais organizada
+
+---
+
+## 🎯 Objetivo das Atualizações
+
+As novas funcionalidades foram desenvolvidas para aproximar o projeto de aplicações reais utilizadas no mercado, demonstrando conhecimentos em:
+
+- Consumo de APIs REST
+- React Hooks
+- Gerenciamento de estado
+- Persistência de dados
+- Performance Front-end
+- Componentização
+- Experiência do usuário (UX)
+- Interface moderna (UI)
+
+Essas melhorias transformam o VibraFM em um projeto mais robusto, escalável e alinhado às práticas utilizadas no desenvolvimento Front-end moderno.
