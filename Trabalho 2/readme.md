@@ -1,3 +1,5 @@
+
+```markdown
 # Projeto: Engenharia de Qualidade — Estratégia de Automação de Testes
 ## Disciplina: Engenharia de Software e Qualidade
 
@@ -13,8 +15,9 @@
 
 ## 🚀 2. Entrada de Requisitos (User Stories & Critérios de Aceitação)
 
-### Contextualização Técnica
+### Contextualização Técnico-Operacional
 A excelência na entrega de soluções tecnológicas está diretamente ligada à confiabilidade e à estabilidade do produto final. Diante do cenário competitivo atual, estabelecer mecanismos robustos de controle de qualidade é uma métrica crítica para o sucesso de qualquer projeto de software.
+
 Para mitigar riscos operacionais, o software deve se comportar exatamente como especificado na fase de levantamento de requisitos, mantendo uma taxa de defeitos residual dentro de limites aceitáveis. Sem uma estratégia rigorosa de verificação e validação (V&V), torna-se impossível certificar o comportamento do sistema.
 
 ### User Story Principal
@@ -25,7 +28,7 @@ Para mitigar riscos operacionais, o software deve se comportar exatamente como e
 ### Critérios de Aceitação Básicos (`acceptanceCriteria`)
 1. **Identificação Única:** O sistema deve validar CPFs ou CNPJs reais e impedir duplicidade no banco de dados.
 2. **Campos Obrigatórios:** Todos os campos assinalados com asterisco vermelho (`*`) são de preenchimento mandatório.
-3. **Persistência Confiável:** As ações só devem ser gravadas se passarem por todas as consistências de input.
+3. **Persistência Confiável:** As ações só devem ser gravadas se passarem por todas as consistências de input e limites de dados.
 
 ---
 
@@ -33,20 +36,23 @@ Para mitigar riscos operacionais, o software deve se comportar exatamente como e
 
 O processo segue uma esteira rigorosa estruturada em fases sequenciais de feedback contínuo:
 
+
 ```
-[ Requisitos / User Stories ] 
-            │
-            ▼
+
+[ Requisitos / User Stories ]
+│
+▼
 [ Planejamento e Modelagem de Testes ] ──► (Fluxogramas / Matriz de Rastreabilidade)
-            │
-            ▼
+│
+▼
 [ Geração de Casos de Teste ] ──► (Suites, Integration & E2E UI Coverages)
-            │
-            ▼
+│
+▼
 [ Desenvolvimento e Execução de Automação ] ──► (Selenium, Cypress, Jenkins, GitLab CI)
-            │
-            ▼
+│
+▼
 [ Relatório de Qualidade & Métricas ] ──► (Métricas de Cobertura e Densidade de Defeitos)
+
 ```
 
 ### Estratégia de Cobertura de Testes
@@ -61,7 +67,7 @@ O processo segue uma esteira rigorosa estruturada em fases sequenciais de feedba
 Com base na interface **Gestão de Clientes | Novo Cadastro (Modelo Único de Tela: UNIQ-MOD-2024-01)**, foi elaborado o roteiro detalhado abaixo.
 
 ### 4.1 Validação de Inputs e Tipos de Dados
-Esta seção valida as regras de preenchimento, restrições de formato, aplicação de máscaras visuais e comportamento de campos específicos.
+Esta seção valida as regras de preenchimento, restrições de formato, aplicação de máscaras visuais e comportamento de campos específicos, incluindo limites de fronteira.
 
 | ID | Etapa do Teste | Categoria | Funcionalidade / Campo | O que preciso para testar este cenário? | O que você vai fazer? | O que espera que aconteça? | Criticidade | Status |
 | :--- | :--- | :--- | :--- | :--- | :--- | :--- | :--- | :--- |
@@ -72,9 +78,10 @@ Esta seção valida as regras de preenchimento, restrições de formato, aplica�
 | **05** | Unidade / Sistema | Negativo | Identificação (CPF/CNPJ) | Inserir um CPF inválido com números sequenciais idênticos (ex: `111.111.111-11`). | Digitar o CPF sequencial inválido e tentar mudar de campo. | O sistema valida o dígito verificador, exibe mensagem informando que o CPF é inválido e impede o envio. | **Alta** | 🟢 APROVADO |
 | **06** | Unidade / Sistema | Positivo | Endereço (Logradouro) / Bairro / Cidade | Campos de texto preenchidos com dados válidos alfanuméricos. | Preencher `Rua das Tulipas`, `Jardim Botânico`, `Curitiba`, `PR`. | O sistema armazena os valores corretamente sem erros de codificação ou truncamento. | **Alta** | 🟢 APROVADO |
 | **07** | Unidade / Sistema | Positivo | Telefone Fixo / Celular | Inserção de números com DDD válidos. | Digitar `4130004000` e `41980009000`. | O sistema aplica automaticamente as máscaras `(41) 3000-4000` e `(41) 98000-9000` respectivamente. | **Média** | 🟢 APROVADO |
+| **07B** | Unidade / Sistema | Negativo | Nome do Cliente | Inserção de texto que ultrapassa o limite máximo do campo (ex: mais de 255 caracteres). | Copiar um bloco de texto muito longo, colar no campo "Nome" e tentar salvar. | O sistema deve bloquear a digitação ao atingir o limite ou exibir alerta de tamanho excedido, impedindo o envio. | **Média** | 🟢 APROVADO |
 
 ### 4.2 Validação da Máquina de Estados (Botões de Ação)
-Esta seção mapeia o comportamento esperado, as transições de tela e os fluxos de persistência ao acionar as ações principais da barra superior do formulário.
+Esta seção mapeia o comportamento esperado, as transições de tela e os fluxos de persistência/exceção ao acionar as ações principais da barra superior do formulário.
 
 | ID | Etapa do Teste | Categoria | Botão / Ação | O que preciso para testar este cenário? | O que você vai fazer? | O que espera que aconteça? | Criticidade | Status | Responsável |
 | :--- | :--- | :--- | :--- | :--- | :--- | :--- | :--- | :--- | :--- |
@@ -82,6 +89,7 @@ Esta seção mapeia o comportamento esperado, as transições de tela e os fluxo
 | **09** | Sistema | Positivo | **Editar** | Um registro válido previamente selecionado e carregado na tela. | Clicar no botão **Editar**. | Os campos tornam-se editáveis para o usuário alterar as informações atuais com segurança. | **Alta** | 🟢 APROVADO | Q.A |
 | **10** | Sistema | Positivo | **Excluir** | Um registro válido ativo carregado em tela. | Clicar no botão **Excluir**. | O sistema dispara um popup de confirmação antes de remover logicamente/fisicamente o dado do banco. | **Alta** | 🟢 APROVADO | Q.A |
 | **11** | Sistema | Positivo | **Confirmar** | Formulário preenchido corretamente com dados válidos de sucesso. | Clicar no botão **Confirmar**. | Registro salvo com sucesso no banco de dados, campos limpos ou travados para nova ação e botões padrão reabilitados. | **Alta** | 🟢 APROVADO | Q.A |
+| **11B** | Sistema | Negativo | **Confirmar (Falha)** | Formulário em modo de inclusão ou edição, mas com dados obrigatórios ausentes. | Apagar o nome do cliente e clicar diretamente no botão **Confirmar**. | O sistema recusa a gravação no banco, mantém a tela no estado de edição e destaca visualmente os campos obrigatórios vazios. | **Alta** | 🟢 APROVADO | Q.A |
 | **12** | Sistema | Positivo | **Cancelar** | Tela em modo de inclusão ou edição com modificações em andamento. | Clicar no botão **Cancelar**. | As alterações são descartadas sem afetar o banco de dados. Os campos voltam ao estado anterior e os botões limpos. | **Média** | 🟢 APROVADO | Q.A |
 | **13** | Sistema | Positivo | **Fechar** | Formulário aberto (em qualquer estado de fluxo). | Clicar no botão **Fechar**. | A janela do formulário de cadastro é encerrada com segurança, retornando à tela anterior ou principal. | **Média** | 🟢 APROVADO | USUÁRIO |
 
@@ -99,6 +107,8 @@ O roteiro acima está estruturado para mapeamento direto para scripts automatiza
 
 Após as rodadas completas de testes automatizados e manuais na esteira de integração contínua, consolidam-se os seguintes indicadores de qualidade:
 
-* 🏁 **Test Coverage (Cobertura de Código e Fluxo):** **95%** (Garantindo que quase a totalidade dos caminhos críticos da máquina de estados foram cobertos).
+* 🏁 **Test Coverage (Cobertura de Código e Fluxo):** **95%** (Garantindo que a totalidade dos caminhos críticos e alternativos da máquina de estados foram cobertos).
 * 🐞 **Defect Density (Densidade de Defeitos):** **1%** (Mantendo o número de falhas residuais por volume de código estritamente dentro da margem aceitável de estabilidade).
 * 📈 **Pass/Fail Rate:** **100% Pass** para os cenários críticos impeditivos de liberação mapeados em produção.
+
+```
